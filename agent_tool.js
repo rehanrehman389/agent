@@ -1,5 +1,6 @@
 import { Agent, run, tool } from '@openai/agents'
 import {z} from 'zod'
+import axios from 'axios'
 
 const getWeatherTool = tool({
      name: 'getWeather',
@@ -8,8 +9,10 @@ const getWeatherTool = tool({
         city: z.string().describe('the city name')
      }),
      execute: async function({city}) {
-        //TODO: replace with api call
-        return `the weather of ${city} is 12 with some wind`
+        const url = `https://wttr.in/${city.toLowerCase()}?format=%C+%t`
+        const response = await axios.get(url, { responseType: 'text' })
+        console.log(response.data)
+        return `the weather of ${city} is ${response.data}`
      }
 })
 
@@ -27,4 +30,4 @@ async function main(query = '') {
     console.log(result.finalOutput)
 }
 
-main('what is stock market condition in New York?')
+main('what is the weather in Mumbai?')
