@@ -16,6 +16,24 @@ const getWeatherTool = tool({
      }
 })
 
+//SAMPLE ANOTHER TOOL
+
+// const sendEmailTool = tool({
+//     name: 'sendEmail',
+//     description: 'sends an email to the given email address',
+//     parameters: z.object({
+//         to: z.string().describe('the email address of the recipient'),
+//         subject: z.string().describe('the subject of the email'),
+//         body: z.string().describe('the body of the email')
+//     }),
+//     execute: async function({to, subject, body}) {
+//         console.log(`sending email to ${to} with subject ${subject} and body ${body}`)
+//         return `email sent to ${to}`
+//     }
+// })
+
+// tools: [getWeatherTool, sendEmailTool],
+
 const agent = new Agent({
     name: 'Weather Agent',
     instructions:`
