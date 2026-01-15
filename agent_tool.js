@@ -1,6 +1,17 @@
 import { Agent, run, tool } from '@openai/agents'
+import {z} from 'zod'
 
-process.env.OPENAI_TRACING = "false"
+const getWeatherTool = tool({
+     name: 'getWeather',
+     description: 'returns the current weather info for the given city',
+     parameters: z.object({
+        city: z.string().describe('the city name')
+     }),
+     execute: async function({city}) {
+        //TODO: replace with api call
+        return `the weather of ${city} is 12 with some wind`
+     }
+})
 
 const agent = new Agent({
     name: 'Weather Agent',
@@ -8,6 +19,7 @@ const agent = new Agent({
         you are an expert weather agent that helps user 
         to tell weather report
     `,
+    tools: [getWeatherTool],
 })
 
 async function main(query = '') {
@@ -15,4 +27,4 @@ async function main(query = '') {
     console.log(result.finalOutput)
 }
 
-main('what is the weather in New York?')
+main('what is stock market condition in New York?')
