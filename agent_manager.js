@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import { Agent, run, tool } from '@openai/agents'
 import { z } from 'zod'
+import fs from 'node:fs/promises'
 
 const fetchAvailablePlans = tool({
     name: 'fetch_available_plans',
@@ -13,6 +14,26 @@ const fetchAvailablePlans = tool({
             { plan_id: '3', print_inr: 1599, speed: '100Mbps' }
         ]
     }
+})
+
+const processRefund = tool({
+    name: 'issue_refund',
+    description: 'issues refund to the customer',
+    parameters: z.object({
+        customer_id: z.string().describe('the customer id of the customer'),
+        reason: z.string().describe('the reason for the refund')
+    }),
+    execute: async function({ customer_id, reason}) {
+        await fs.appendFile('./refunds.txt', `Refund for Customer having ID ${customer_id} for ${reason}`, 'utf-8')
+        return { refundIssued: true };
+        // return `refund issued to customer ${customer_id} for reason ${reason}`
+    }
+})
+
+const refundAgent = new Agent({
+    name: 'Refund Agent',
+    instructions: 'Your are expert in issuing refunds to the customer',
+    tools: [processRefund]
 })
 
 const salesAgent = new Agent({
@@ -30,4 +51,4 @@ async function runAgent(query = '') {
     console.log(result.finalOutput)
 }
 
-runAgent('i had a plan 499. i need a refund right now. my cus id is 428638')
+runAgent('i had a plan 499. i need a refund right now. my cus id is 428638 because i am shifting to a new place')
