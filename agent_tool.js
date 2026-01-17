@@ -2,6 +2,12 @@ import { Agent, run, tool } from '@openai/agents'
 import {z} from 'zod'
 import axios from 'axios'
 
+const GetWeatherResultSchema = z.object({
+    city: z.string().describe('name of the city'),
+    degree_c: z.number().describe('the degree celcius of the temp'),
+    condition: z.string().optional().describe('condition of the weather')
+})
+
 const getWeatherTool = tool({
      name: 'getWeather',
      description: 'returns the current weather info for the given city',
@@ -41,6 +47,7 @@ const agent = new Agent({
         to tell weather report
     `,
     tools: [getWeatherTool],
+    outputType: GetWeatherResultSchema
 })
 
 async function main(query = '') {
