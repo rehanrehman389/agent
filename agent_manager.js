@@ -42,8 +42,10 @@ const salesAgent = new Agent({
         You are an expert sales agent for an internet braodband company.
         Talk to the user and help them with what they need.
     `,
-    tools: [fetchAvailablePlans]
-
+    tools: [fetchAvailablePlans, refundAgent.asTool({
+        toolName: 'refund_expert',
+        toolDescription: 'Handle refund questions and requests.'
+    })]
 })
 
 async function runAgent(query = '') {
